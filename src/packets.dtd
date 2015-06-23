@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT packets (pket*,import*)>
+<!ELEMENT pket (#PCDATA)>
+<!ATTLIST pket
+    id CDATA #REQUIRED
+    method CDATA #REQUIRED
+    class CDATA #REQUIRED    
+>
+
+<!ELEMENT import (#PCDATA)>
+<!ATTLIST import  
+    src CDATA #REQUIRED     
+>
+
+

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE packets SYSTEM "../../../../packets.dtd">
+<packets>
+     <!-- id(报文标记 )   class(执行的class路径)   method(执行的方法)-->
+	 <!-- 注册报文 -->
+	 <pket id="locatePacket" method="locate" class="com.wtyt.yzone.locate.handle.LocateHandle">
+	
+	 </pket>
+	 
+	 <pket id="locatePacket_ver1.0" method="locate" class="com.wtyt.yzone.locate.handle.LocateHandle">
+	
+	 </pket>
+	
+</packets>

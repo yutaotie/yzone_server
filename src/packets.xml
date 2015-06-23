@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE packets SYSTEM "packets.dtd">
+<packets>
+         
+    <!-- 登录模块 -->
+	<import src="com/wtyt/yzone/login/login_packets.xml" />
+
+    <!-- 定位模块 -->
+	<import src="com/wtyt/yzone/locate/locate_packets.xml" />
+	
+</packets>

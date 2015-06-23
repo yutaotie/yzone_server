@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+    <appender name="SYSTEM_ASYNC" class="org.apache.log4j.AsyncAppender">
+        <appender-ref ref="SYSTEM_LOG"/>
+    </appender>
+
+    <appender name="SYSTEM_LOG" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="d:\\www.log"/>
+        <!-- param name="File" value="/home/cim3/daemon/log/cim3_system.log"/-->
+        <param name="MaxFileSize" value="20MB"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                value="%d{yyyy/MM/dd HH:mm:ss,SSS} %-5p [%t] %c{1} - %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                value="%d{yyyy/MM/dd HH:mm:ss,SSS} %-5p [%t] %C{1} [%M:%L] - %m%n"/>
+        </layout>
+    </appender>
+
+
+    <root>
+        <level value ="info" />
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="SYSTEM_ASYNC"/>
+    </root>
+
+</log4j:configuration>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!--
+		<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN"
+		"http://www.springframework.org/dtd/spring-beans-2.0.dtd"> <beans>
+	-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+					 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+                     http://www.springframework.org/schema/tx 
+                     http://www.springframework.org/schema/tx/spring-tx.xsd 
+                     http://www.springframework.org/schema/aop 
+                     http://www.springframework.org/schema/aop/spring-aop.xsd">
+	<!-- 配置数据库-->
+	<!-- c3p0 配置 -->
+	<bean id="dataSource"   class="com.mchange.v2.c3p0.ComboPooledDataSource"  destroy-method="close">        
+		<property name="driverClass">
+            <value>oracle.jdbc.driver.OracleDriver</value>  
+        </property>  
+        <property name="jdbcUrl">
+			<value>jdbc:oracle:thin:@:tsh1</value>
+		</property>
+		<property name="user">
+			<value></value>
+		</property>
+		<property name="password">
+			<value></value>
+		</property>		
+        
+ 		<!--连接池中保留的最小连接数。-->  
+        <property name="minPoolSize">  
+            <value>1</value>  
+        </property>  
+ 		<!--连接池中保留的最大连接数。Default: 15 -->  
+        <property name="maxPoolSize">  
+            <value>50</value>  
+        </property>  
+		<!--初始化时获取的连接数，取值应在minPoolSize与maxPoolSize之间。Default: 3 -->  
+        <property name="initialPoolSize">  
+            <value>1</value>  
+        </property>  
+ 		<!--最大空闲时间,60秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->  
+        <property name="maxIdleTime">  
+            <value>600</value>  
+        </property>  
+ 		<!--当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。Default: 3 -->  
+        <property name="acquireIncrement">  
+            <value>3</value>  
+        </property>  
+		 <!--JDBC的标准参数，用以控制数据源内加载的PreparedStatements数量。但由于预缓存的statements  
+		  属于单个connection而不是整个连接池。所以设置这个参数需要考虑到多方面的因素。  
+		  如果maxStatements与maxStatementsPerConnection均为0，则缓存被关闭。Default: 0-->  
+        <property name="maxStatements">  
+            <value>50</value>  
+        </property>  
+ 		<!--每60秒检查所有连接池中的空闲连接。Default: 0 -->  
+        <property name="idleConnectionTestPeriod">  
+            <value>300</value>  
+        </property>  
+ 		<!--定义在从数据库获取新连接失败后重复尝试的次数。Default: 30 -->  
+        <property name="acquireRetryAttempts">  
+            <value>30</value>  
+        </property>  
+		 <!--获取连接失败将会引起所有等待连接池来获取连接的线程抛出异常。但是数据源仍有效  
+		  保留，并在下次调用getConnection()的时候继续尝试获取连接。如果设为true，那么在尝试  
+		  获取连接失败后该数据源将申明已断开并永久关闭。Default: false-->  
+        <property name="breakAfterAcquireFailure">  
+            <value>true</value>  
+        </property>    
+		 <!--因性能消耗大请只在需要的时候使用它。如果设为true那么在每个connection提交的  
+		  时候都将校验其有效性。建议使用idleConnectionTestPeriod或automaticTestTable  
+		  等方法来提升连接测试的性能。Default: false
+-->  
+        <property name="testConnectionOnCheckout">  
+            <value>false</value>  
+        </property>  
+        <property name="preferredTestQuery">  
+            <value>select 1 from dual</value>  
+        </property>
+    </bean>
+
+   <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">  
+        <property name="maxActive" value="100"></property>  
+        <property name="maxIdle" value="6"></property>  
+        <property name="maxWait" value="15000"></property>  
+        <property name="minEvictableIdleTimeMillis" value="300000"></property>  
+        <property name="numTestsPerEvictionRun" value="3"></property>  
+        <property name="timeBetweenEvictionRunsMillis" value="60000"></property>  
+        <property name="whenExhaustedAction" value="1"></property>  
+    </bean>
+      
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy">  
+        <!-- config -->  
+        <constructor-arg ref="jedisPoolConfig"></constructor-arg>  
+        <!-- host -->  
+        <constructor-arg value="218.206.70.232"></constructor-arg>  
+        <!-- port -->  
+        <constructor-arg value="20030"></constructor-arg>  
+        <!-- timeout -->  
+        <constructor-arg value="15000"></constructor-arg>  
+        <!-- password -->  
+        <constructor-arg value="redis_HYB#3#"></constructor-arg> 
+        <!-- database index -->  
+       <!--  <constructor-arg value="12"></constructor-arg>         -->
+    </bean>  
+
+
+
+	<!-- 读取配置文件 -->
+
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+		<property name="configLocation">
+			<value>classpath:SqlMapConfig.xml</value>
+		</property>
+	</bean>
+	
+	
+		<!-- dao层的注入 -->
+	<bean id="baseDao" class="com.wtyt.util.init.dao.impl.BaseDaoImpl">
+		<property name="sqlMapClient">
+			<ref local="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<!-- 实现层的注入 -->
+	<bean id="startUpDao" class="com.wtyt.util.init.dao.impl.StartUpDaoImpl">
+		<property name="sqlMapClient">
+			<ref local="sqlMapClient" />
+		</property>
+	</bean>
+	
+	
+	
+
+	
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="transactionManagerRootProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		abstract="true">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<property name="proxyTargetClass">
+			<value>false</value>
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="find*">PROPAGATION_REQUIRED,readOnly</prop>
+			</props>
+		</property>
+	</bean>
+
+
+	<!-- 事务配置 -->
+	<bean id="transactionInterceptor"
+		class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="find*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED,-Exception</prop>
+			</props>
+		</property>
+	</bean>
+	<bean
+		class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<property name="beanNames">
+			<value>*Dao</value>
+		</property>
+		<property name="interceptorNames">
+			<value>transactionInterceptor</value>
+		</property>
+	</bean>
+
+</beans>
