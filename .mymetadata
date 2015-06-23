@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="yzone_server"
+  id="myeclipse.1435023367162"
+  context-root="/yzone_server"
+  j2ee-spec="5.0"
+  archive="yzone_server.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+
